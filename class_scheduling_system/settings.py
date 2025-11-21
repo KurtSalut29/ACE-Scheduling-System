@@ -13,9 +13,14 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-secret-for-dev")
 
 # ---------------- DEBUG ---------------- #
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-# ---------------- DEBUG ---------------- #
-DEBUG = os.environ.get("DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+
+# ---------------- ALLOWED HOSTS ---------------- #
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
+# ---------------- CSRF TRUSTED ORIGINS ---------------- #
+CSRF_TRUSTED_ORIGINS = [
+    'https://ace-scheduling-system-3.onrender.com',
+]
 
 # ---------------- INSTALLED APPS ---------------- #
 INSTALLED_APPS = [
@@ -43,6 +48,7 @@ INTERNAL_IPS = ["127.0.0.1"]
 # ---------------- MIDDLEWARE ---------------- #
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,6 +77,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'class_scheduling_system.wsgi.application'
 
+# ---------------- DATABASE ---------------- #
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -98,6 +105,12 @@ USE_TZ = True
 # ---------------- STATIC FILES ---------------- #
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+] if os.path.exists(os.path.join(BASE_DIR, 'static')) else []
+
+# WhiteNoise configuration for static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ---------------- MEDIA FILES ---------------- #
 MEDIA_URL = '/media/'
@@ -117,3 +130,13 @@ LOGIN_REDIRECT_URL = '/admin_dashboard/'
 # ---------------- CRISPY FORMS ---------------- #
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# ---------------- SECURITY SETTINGS (Production) ---------------- #
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'

@@ -143,7 +143,10 @@ nav.sidebar-nav a.active {
 }
 
 .navbar {
+  background: var(--white);
   padding: 20px 32px;
+  box-shadow: var(--card-shadow);
+  position: sticky;
   top: 0;
   z-index: 50;
   display: flex;
@@ -165,11 +168,24 @@ nav.sidebar-nav a.active {
   font-weight: 500;
 }
 
+/* ===============================
+    HEADER SECTION
+  =============================== */
+.header {
+  padding: 24px 32px 0;
+}
+
+.header h1 {
+  font-size: 28px;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
 
 /* ===============================
-   TOAST MESSAGES
-=============================== */
-.toast-container {
+    MESSAGES/ALERTS
+  =============================== */
+.messages {
   position: fixed;
   top: 90px;
   right: 30px;
@@ -177,37 +193,40 @@ nav.sidebar-nav a.active {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: 400px;
 }
 
-.toast {
+.alert {
   padding: 14px 20px;
   border-radius: 8px;
-  min-width: 300px;
   font-weight: 500;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   animation: slideInRight 0.3s ease, fadeOut 0.5s ease 4.5s forwards;
   border-left: 4px solid;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.toast.success {
+.alert-success {
   background: #d4edda;
   color: #155724;
   border-left-color: var(--accent-success);
 }
 
-.toast.error {
+.alert-danger {
   background: #f8d7da;
   color: #721c24;
   border-left-color: var(--accent-danger);
 }
 
-.toast.warning {
+.alert-warning {
   background: #fff3cd;
   color: #856404;
   border-left-color: var(--accent-warning);
 }
 
-.toast.info {
+.alert-info {
   background: #d1ecf1;
   color: #0c5460;
   border-left-color: var(--accent-info);
@@ -236,137 +255,61 @@ nav.sidebar-nav a.active {
 }
 
 /* ===============================
-   CARDS
-=============================== */
-.card {
+    CONTAINER/CARDS
+  =============================== */
+.container,
+.form-container {
   background: var(--white);
   border-radius: 12px;
-  box-shadow: var(--card-shadow);
   padding: 24px;
+  box-shadow: var(--card-shadow);
   margin: 20px 28px;
   transition: all 0.3s ease;
   border: 1px solid var(--border);
-  overflow: visible;
 }
 
-.card:hover {
+.container:hover,
+.form-container:hover {
   box-shadow: var(--card-shadow-hover);
   transform: translateY(-2px);
 }
 
-.card h2 {
+.form-container h2 {
   font-size: 18px;
   font-weight: 600;
   color: var(--text-dark);
   margin-bottom: 16px;
   padding-bottom: 10px;
   border-bottom: 3px solid var(--primary);
-  display: inline-block;
-}
-
-/* ===============================
-   SEARCH & FILTER SECTION
-=============================== */
-.search-filter-section {
-  display: flex;
-  justify-content: space-between;
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
+  gap: 10px;
 }
 
-.search-wrapper {
-  position: relative;
-  flex: 1;
-  max-width: 350px;
-  min-width: 250px;
-}
-
-.search-wrapper input {
-  width: 100%;
-  padding: 10px 14px 10px 40px;
-  border: 2px solid var(--border);
-  border-radius: 6px;
-  font-size: 14px;
-  font-family: "Poppins", sans-serif;
-  transition: all 0.3s ease;
-  background: var(--white);
-}
-
-.search-wrapper input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.08);
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  font-size: 14px;
-  pointer-events: none;
-}
-
-.filter-btns {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  padding: 9px 18px;
-  border: 2px solid var(--border);
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  background: var(--white);
-  color: var(--text-dark);
-  font-family: "Poppins", sans-serif;
-}
-
-.filter-btn:hover {
-  border-color: var(--primary);
+.form-container h2 i {
   color: var(--primary);
-  background: rgba(78, 115, 223, 0.05);
-}
-
-.filter-btn.active {
-  background: var(--primary);
-  color: var(--white);
-  border-color: var(--primary);
-  box-shadow: 0 2px 8px rgba(78, 115, 223, 0.3);
-}
-
-.filter-btn.default {
-  background: var(--white);
-  color: var(--text-dark);
+  font-size: 18px;
 }
 
 /* ===============================
-   FORM STYLES
-=============================== */
-form {
+    FORM STYLES
+  =============================== */
+.form-section {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  align-items: flex-end;
   margin-top: 16px;
 }
 
-form > div,
-form > label {
-  flex: 1 1 calc(50% - 6px);
-  min-width: 200px;
+.form-group {
   display: flex;
   flex-direction: column;
+  margin-bottom: 12px;
+  flex: 1 1 calc(50% - 6px);
+  min-width: 200px;
 }
 
-form label {
+label {
   font-weight: 600;
   color: var(--text-dark);
   margin-bottom: 6px;
@@ -374,31 +317,30 @@ form label {
   letter-spacing: 0.2px;
 }
 
-form input[type="text"],
-form input[type="number"],
-form input[type="email"],
-form select {
+.form-input,
+select.form-input,
+textarea.form-input {
   width: 100%;
-  max-width: 100%;
   padding: 10px 14px;
   border: 2px solid var(--border);
   border-radius: 6px;
   font-size: 14px;
   font-family: "Poppins", sans-serif;
+  outline: none;
   transition: all 0.3s ease;
   background: var(--white);
   color: var(--text-dark);
   box-sizing: border-box;
 }
 
-form input:focus,
-form select:focus {
-  outline: none;
+.form-input:focus,
+select.form-input:focus,
+textarea.form-input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.08);
 }
 
-form select {
+select.form-input {
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234e73df' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
@@ -407,65 +349,93 @@ form select {
   padding-right: 32px;
 }
 
-form button {
-  flex: 1 1 100%;
-  margin-top: 4px;
+textarea.form-input {
+  min-height: 80px;
+  resize: vertical;
+}
+
+option {
+  background-color: var(--white) !important;
+  color: var(--text-dark) !important;
+  padding: 8px;
 }
 
 /* ===============================
-   BUTTON STYLES
-=============================== */
-.btn,
-button {
-  padding: 10px 20px;
+    BUTTON STYLES
+  =============================== */
+.btn {
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
+  border-radius: 6px;
+  padding: 10px 20px;
   transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-family: "Poppins", sans-serif;
-  text-decoration: none;
   white-space: nowrap;
+  font-family: "Poppins", sans-serif;
 }
 
-.btn-add,
-button[type="submit"] {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+.btn i {
+  font-size: 14px;
+}
+
+.btn-add {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
   color: var(--white);
   box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3);
 }
 
-.btn-add:hover,
-button[type="submit"]:hover {
+.btn-add:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(78, 115, 223, 0.4);
 }
 
-.btn-edit {
-  background: linear-gradient(135deg, var(--accent-success) 0%, #16a974 100%);
+.btn-search {
+  background: var(--accent-info);
   color: var(--white);
-  box-shadow: 0 4px 12px rgba(28, 200, 138, 0.3);
+  box-shadow: 0 4px 12px rgba(54, 185, 204, 0.3);
 }
 
-.btn-edit:hover {
+.btn-search:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(28, 200, 138, 0.4);
+  box-shadow: 0 6px 16px rgba(54, 185, 204, 0.4);
 }
 
-.btn-delete {
+.btn-edit {
+  background: var(--accent-warning);
+  color: var(--white);
+}
+
+.btn-delete,
+.btn-delete-confirm {
   background: linear-gradient(135deg, var(--accent-danger) 0%, #c53030 100%);
   color: var(--white);
   box-shadow: 0 4px 12px rgba(231, 74, 59, 0.3);
 }
 
-.btn-delete:hover {
+.btn-delete:hover,
+.btn-delete-confirm:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(231, 74, 59, 0.4);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, var(--accent-success) 0%, #16a974 100%);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(28, 200, 138, 0.3);
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(28, 200, 138, 0.4);
 }
 
 .btn-cancel {
@@ -478,64 +448,32 @@ button[type="submit"]:hover {
 }
 
 /* ===============================
-   ACTION BUTTONS (Match manage_users.css)
-=============================== */
-.action-btn {
-  padding: 6px 11px;
-  font-size: 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  margin: 0 2px;
-  transition: all 0.2s ease;
-  display: inline-flex;
+    TABLE HEADER & SEARCH
+  =============================== */
+.table-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-weight: 500;
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.action-btn.view {
-  background: rgba(52, 152, 219, 0.1);
-  color: #3498db;
-  border: 1px solid rgba(52, 152, 219, 0.3);
+.search-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.action-btn.view:hover {
-  background: #3498db;
-  color: var(--white);
-  transform: scale(1.08);
-  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
-}
-
-.action-btn.edit {
-  background: rgba(28, 200, 138, 0.1);
-  color: var(--accent-success);
-  border: 1px solid rgba(28, 200, 138, 0.3);
-}
-
-.action-btn.edit:hover {
-  background: var(--accent-success);
-  color: var(--white);
-  transform: scale(1.08);
-  box-shadow: 0 2px 8px rgba(28, 200, 138, 0.3);
-}
-
-.action-btn.delete {
-  background: rgba(231, 74, 59, 0.1);
-  color: var(--accent-danger);
-  border: 1px solid rgba(231, 74, 59, 0.3);
-}
-
-.action-btn.delete:hover {
-  background: var(--accent-danger);
-  color: var(--white);
-  transform: scale(1.08);
-  box-shadow: 0 2px 8px rgba(231, 74, 59, 0.3);
+.search-bar .form-input {
+  width: 250px;
+  min-width: 200px;
 }
 
 /* ===============================
-   TABLE DESIGN
-=============================== */
+    TABLE DESIGN
+  =============================== */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -568,9 +506,10 @@ button[type="submit"]:hover {
 
 table {
   width: 100%;
-  min-width: 800px;
+  min-width: 900px;
   border-collapse: separate;
   border-spacing: 0;
+  background: var(--white);
   margin: 0;
 }
 
@@ -582,23 +521,26 @@ table td {
 }
 
 table thead th {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
   color: var(--white);
   font-weight: 600;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
+  border-bottom: none;
 }
 
 table thead th:first-child {
   border-radius: 10px 0 0 0;
-  padding-left: 16px;
 }
 
 table thead th:last-child {
   border-radius: 0 10px 0 0;
-  padding-right: 16px;
 }
 
 table tbody tr {
@@ -614,16 +556,16 @@ table tbody tr:hover {
   background: rgba(78, 115, 223, 0.05);
 }
 
-table tbody tr:last-child {
-  border-bottom: none;
-}
-
 table tbody tr:last-child td:first-child {
   border-radius: 0 0 0 10px;
 }
 
 table tbody tr:last-child td:last-child {
   border-radius: 0 0 10px 0;
+}
+
+table tbody tr:last-child {
+  border-bottom: none;
 }
 
 table td {
@@ -633,26 +575,81 @@ table td {
 
 table td:first-child {
   font-weight: 500;
-  padding-left: 16px;
 }
 
-table td:last-child {
+.no-data {
   text-align: center;
-  padding-right: 16px;
-  white-space: nowrap;
-}
-
-.empty-table {
-  text-align: center;
-  padding: 40px;
+  padding: 40px 18px;
   color: var(--text-muted);
   font-style: italic;
   background: #f8f9fc;
 }
 
 /* ===============================
-   MODAL STYLES
-=============================== */
+    ACTION BUTTONS IN TABLE
+  =============================== */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn {
+  padding: 7px 11px;
+  font-size: 13px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.action-btn.view {
+  background: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.action-btn.view:hover {
+  background: #3498db;
+  color: var(--white);
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+.action-btn.edit {
+  background: rgba(255, 165, 2, 0.1);
+  color: #ffa502;
+  border: 1px solid rgba(255, 165, 2, 0.3);
+}
+
+.action-btn.edit:hover {
+  background: #ffa502;
+  color: var(--white);
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(255, 165, 2, 0.3);
+}
+
+.action-btn.delete {
+  background: rgba(231, 74, 59, 0.1);
+  color: var(--accent-danger);
+  border: 1px solid rgba(231, 74, 59, 0.3);
+}
+
+.action-btn.delete:hover {
+  background: var(--accent-danger);
+  color: var(--white);
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(231, 74, 59, 0.3);
+}
+
+/* ===============================
+    MODAL STYLES
+  =============================== */
 .modal {
   display: none;
   position: fixed;
@@ -661,7 +658,7 @@ table td:last-child {
   backdrop-filter: blur(4px);
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .modal.active {
@@ -670,8 +667,12 @@ table td:last-child {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-content {
@@ -682,7 +683,6 @@ table td:last-child {
   max-width: 95%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease;
-  position: relative;
 }
 
 @keyframes slideUp {
@@ -712,7 +712,7 @@ table td:last-child {
   font-weight: 600;
 }
 
-.modal-header .close {
+.close {
   cursor: pointer;
   font-size: 26px;
   color: var(--text-muted);
@@ -724,28 +724,20 @@ table td:last-child {
   justify-content: center;
   border-radius: 50%;
   transition: all 0.2s;
-  position: absolute;
-  top: 20px;
-  right: 20px;
 }
 
-.modal-header .close:hover {
+.close:hover {
   background: rgba(231, 74, 59, 0.1);
   color: var(--accent-danger);
   transform: rotate(90deg);
 }
 
-.modal-logo {
-  width: 80px;
-  margin: 0 auto 16px;
-  display: block;
+.modal .form-group {
+  margin-bottom: 16px;
 }
 
-.modal form {
-  margin-top: 16px;
-}
-
-.modal .form-actions {
+.modal .form-actions,
+.modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -755,21 +747,45 @@ table td:last-child {
 }
 
 /* ===============================
-   RESPONSIVE DESIGN
-=============================== */
+    PAGINATION
+  =============================== */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-page {
+  background: var(--primary);
+  color: var(--white);
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.btn-page:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3);
+}
+
+.page-info {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ===============================
+    RESPONSIVE DESIGN
+  =============================== */
 @media (max-width: 1024px) {
-  form > div,
-  form > label {
+  .form-group {
     flex: 1 1 100%;
-  }
-  
-  .search-filter-section {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .search-wrapper {
-    max-width: 100%;
   }
 }
 
@@ -807,9 +823,36 @@ table td:last-child {
     font-size: 18px;
   }
 
-  .card {
+  .header {
+    padding: 20px 20px 0;
+  }
+
+  .container,
+  .form-container {
     margin: 16px 20px;
     padding: 20px;
+  }
+
+  .form-section {
+    flex-direction: column;
+  }
+
+  .form-group {
+    flex: 1 1 100%;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-bar .form-input {
+    width: 100%;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   table th,
@@ -818,13 +861,10 @@ table td:last-child {
     padding: 10px 8px;
   }
 
-  .toast-container {
+  .messages {
     right: 10px;
     left: 10px;
-  }
-
-  .toast {
-    min-width: auto;
+    max-width: none;
   }
 }
 
@@ -840,7 +880,7 @@ table td:last-child {
   }
 
   table {
-    min-width: 600px;
+    min-width: 700px;
     font-size: 11px;
   }
 
@@ -849,63 +889,111 @@ table td:last-child {
     padding: 8px 6px;
   }
 
-  .filter-btns {
-    width: 100%;
-  }
-
-  .filter-btn {
-    flex: 1;
-    text-align: center;
-  }
-
   .action-btn {
-    padding: 5px 9px;
-    font-size: 11px;
+    padding: 6px 9px;
+    font-size: 12px;
   }
 }
 
-/* Add these dark mode fixes to your manage_users.css */
-
-/* Dark Mode - Table Fixes */
-body.dark-mode .table-responsive {
-  background: #16213e !important;
+/* --- Optional layout refinements for better UI --- */
+.form-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
 }
 
-body.dark-mode .table-responsive thead th {
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--primary-dark) 100%
-  );
-  color: #ffffff;
+.form-select {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
 }
 
-body.dark-mode .table-responsive tbody tr {
-  background: #16213e !important;
-  border-bottom-color: #2d3748;
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-body.dark-mode .table-responsive tbody tr:nth-child(even) {
-  background: #1a1f3a !important;
+.card h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
 }
 
-body.dark-mode .table-responsive tbody tr:hover {
-  background: rgba(78, 115, 223, 0.15) !important;
+.btn-delete {
+  background-color: #dc3545;
+  border: none;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-body.dark-mode .table-responsive tbody tr.selected {
-  background: rgba(28, 200, 138, 0.2) !important;
+.btn-delete:hover {
+  background-color: #b92d39;
 }
 
-body.dark-mode .table-responsive td {
-  color: #e0e0e0;
+.btn-add {
+  background-color: #4e73df;
+  border: none;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-body.dark-mode .table-wrapper {
-  background: #16213e;
-  border-color: #2d3748;
+.btn-add:hover {
+  background-color: #3b5dc9;
 }
-body.dark-mode .navbar {
-    /* background: #16213e; */
-    border-bottom-color: #2d3748;
+
+select.form-select:focus {
+  outline: none;
+  border-color: #4e73df;
 }
+
+.no-data {
+  text-align: center;
+  color: #777;
+}
+
+.announcement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 1rem;
+}
+
+.announcement-card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.announcement-card h4 {
+  margin-bottom: 6px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.announcement-card p {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.announcement-card small {
+  display: block;
+  color: #888;
+  margin-top: 4px;
+}
+
+.announcement-card form {
+  margin-top: 10px;
+}
+
+/*
