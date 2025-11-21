@@ -15,11 +15,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-secret-for-dev")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # ---------------- ALLOWED HOSTS ---------------- #
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "ace-scheduling-system-2.onrender.com"
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 # ---------------- INSTALLED APPS ---------------- #
 INSTALLED_APPS = [
