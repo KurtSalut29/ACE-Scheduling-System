@@ -73,15 +73,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'class_scheduling_system.wsgi.application'
 
-# ---------------- DATABASE ---------------- #
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
-        'NAME': os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
-        'USER': os.environ.get("DB_USER", ""),
-        'PASSWORD': os.environ.get("DB_PASSWORD", ""),
-        'HOST': os.environ.get("DB_HOST", ""),
-        'PORT': os.environ.get("DB_PORT", ""),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'class_scheduling_system',
+        'USER': 'root',
+        'PASSWORD': '12345',
+        'HOST': 'localhost',  # or your MySQL host
+        'PORT': '3306',       # default MySQL port
     }
 }
 
