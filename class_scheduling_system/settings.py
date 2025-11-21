@@ -13,9 +13,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-secret-for-dev")
 
 # ---------------- DEBUG ---------------- #
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-
-# ---------------- ALLOWED HOSTS ---------------- #
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+# ---------------- DEBUG ---------------- #
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
 # ---------------- INSTALLED APPS ---------------- #
 INSTALLED_APPS = [
