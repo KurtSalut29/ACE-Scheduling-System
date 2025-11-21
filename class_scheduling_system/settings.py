@@ -76,11 +76,11 @@ WSGI_APPLICATION = 'class_scheduling_system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'class_scheduling_system',
-        'USER': 'root',
-        'PASSWORD': '12345',
-        'HOST': 'localhost',  # or your MySQL host
-        'PORT': '3306',       # default MySQL port
+        'NAME': os.environ.get('DB_NAME', 'class_scheduling_system'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', '12345'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
 
