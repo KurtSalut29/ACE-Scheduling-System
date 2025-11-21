@@ -1,0 +1,626 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Public Class Schedules | A.C.E. Scheduling System</title>
+    <link rel="icon" type="image/png" href="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      /* Reset and Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #4e73df;
+        --primary-dark: #2e59d9;
+        --accent-success: #1cc88a;
+        --text-dark: #222;
+        --text-muted: #6c757d;
+        --light-bg: #f4f5f7;
+        --white: #ffffff;
+        --border: #e3e6f0;
+        --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+        --card-shadow-hover: 0 6px 24px rgba(15, 23, 42, 0.12);
+      }
+
+      body {
+        background: var(--light-bg);
+        font-family: "Poppins", sans-serif;
+        color: var(--text-dark);
+      }
+
+      /* Hero Header with Centered Logo */
+      .hero-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        padding: 40px 20px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(78, 115, 223, 0.3);
+        margin-bottom: 30px;
+      }
+
+      .hero-logo {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+        animation: logoFloat 3s ease-in-out infinite;
+      }
+
+      @keyframes logoFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+
+      .hero-title {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .hero-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        font-weight: 400;
+      }
+
+      /* Container */
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Card Styling */
+      .card {
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+      }
+
+      .card:hover {
+        box-shadow: var(--card-shadow-hover);
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-title i {
+        color: var(--primary);
+        font-size: 20px;
+      }
+
+      /* Form Styling */
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 13px;
+        margin-bottom: 6px;
+        letter-spacing: 0.2px;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 11px 14px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: "Poppins", sans-serif;
+        transition: all 0.3s ease;
+        background: var(--white);
+        color: var(--text-dark);
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
+      }
+
+      .form-group select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234e73df' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 40px;
+      }
+
+      /* Button Group */
+      .button-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Poppins", sans-serif;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(78, 115, 223, 0.4);
+      }
+
+      .btn-secondary {
+        background: var(--border);
+        color: var(--text-dark);
+      }
+
+      .btn-secondary:hover {
+        background: #cbd5e0;
+      }
+
+      /* Page Info Card */
+      .page-info {
+        background: linear-gradient(135deg, rgba(78, 115, 223, 0.1) 0%, rgba(78, 115, 223, 0.05) 100%);
+        border-left: 4px solid var(--primary);
+        padding: 20px 24px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+      }
+
+      .page-info h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+      }
+
+      .page-info h2 i {
+        color: var(--primary);
+      }
+
+      /* Section Header */
+      .section-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        padding: 16px 24px;
+        border-radius: 10px 10px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 2px 8px rgba(78, 115, 223, 0.2);
+        letter-spacing: 0.3px;
+      }
+
+      .section-header i {
+        font-size: 18px;
+      }
+
+      /* Table Container */
+      .table-container {
+        background: var(--white);
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        margin-bottom: 30px;
+        border: 1px solid var(--border);
+      }
+
+      .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+      }
+
+      /* Table Styling */
+      table {
+        width: 100%;
+        min-width: 1200px;
+        border-collapse: collapse;
+      }
+
+      table thead {
+        background: linear-gradient(135deg, #5a7fd8 0%, #4568c8 100%);
+      }
+
+      table th {
+        padding: 14px 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: white;
+        white-space: nowrap;
+      }
+
+      table tbody tr {
+        background: var(--white);
+        transition: all 0.2s ease;
+        border-bottom: 1px solid var(--border);
+      }
+
+      table tbody tr:nth-child(even) {
+        background: #f8f9fc;
+      }
+
+      table tbody tr:hover {
+        background: rgba(78, 115, 223, 0.06);
+        transform: translateX(3px);
+      }
+
+      table td {
+        padding: 14px 16px;
+        color: var(--text-dark);
+        font-size: 13px;
+        vertical-align: middle;
+      }
+
+      table td:first-child {
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      table tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      /* No Data State */
+      .no-data {
+        text-align: center;
+        padding: 80px 20px;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border);
+      }
+
+      .no-data i {
+        font-size: 64px;
+        color: var(--primary);
+        opacity: 0.3;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .no-data p {
+        color: var(--text-muted);
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      /* Spacing Utility */
+      .mb-3 {
+        margin-bottom: 24px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero-header {
+          padding: 30px 20px;
+        }
+
+        .hero-logo {
+          width: 80px;
+          height: 80px;
+        }
+
+        .hero-title {
+          font-size: 1.5rem;
+        }
+
+        .hero-subtitle {
+          font-size: 0.9rem;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .card {
+          padding: 20px;
+        }
+
+        .section-header {
+          font-size: 14px;
+          padding: 14px 20px;
+        }
+
+        table th,
+        table td {
+          padding: 12px 10px;
+          font-size: 12px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-logo {
+          width: 70px;
+          height: 70px;
+        }
+
+        .hero-title {
+          font-size: 1.3rem;
+        }
+
+        .card {
+          padding: 16px;
+        }
+
+        .card-title {
+          font-size: 16px;
+        }
+
+        table {
+          min-width: 900px;
+        }
+
+        .btn {
+          padding: 10px 20px;
+          font-size: 13px;
+        }
+      }
+    </style>
+</head>
+<body>
+
+  <!-- Hero Header with Centered Logo -->
+  <header class="hero-header">
+    <img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" 
+         alt="A.C.E. Logo" 
+         class="hero-logo">
+    <h1 class="hero-title">Public Class Schedule Viewer</h1>
+    <p class="hero-subtitle">View class schedules across all departments</p>
+  </header>
+
+  <div class="container">
+    
+    <!-- Department Selection Card -->
+    <div class="card">
+      <h2 class="card-title">
+        <i class="fas fa-building"></i>
+        Select Department
+      </h2>
+      <form method="get" id="departmentForm">
+        <div class="form-group">
+          <label for="departmentSelect">Department</label>
+          <select name="department" id="departmentSelect">
+            <option value="">-- Choose a Department --</option>
+            {% for d in departments %}
+              <option value="{{ d.id }}"
+                {% if request.GET.department == d.id|stringformat:'s' %} selected
+                {% elif selected_department and selected_department.id == d.id %} selected
+                {% endif %}>
+                {{ d.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </form>
+    </div>
+
+    {% if selected_department %}
+    <!-- Filter Card -->
+    <div class="card">
+      <h2 class="card-title">
+        <i class="fas fa-filter"></i>
+        Filter Schedule
+      </h2>
+      <form method="get" id="searchForm">
+        <input type="hidden" name="department" value="{{ selected_department.id }}">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="school_year_level">Year Level</label>
+            <input type="text" 
+                   name="school_year_level" 
+                   id="school_year_level" 
+                   placeholder="e.g., 1st Year" 
+                   value="{{ request.GET.school_year_level }}">
+          </div>
+
+          <div class="form-group">
+            <label for="section">Section</label>
+            <input type="text" 
+                   name="section" 
+                   id="section" 
+                   placeholder="e.g., BSCS 1-A" 
+                   value="{{ request.GET.section }}">
+          </div>
+
+          <div class="form-group">
+            <label for="instructor">Instructor</label>
+            <input type="text" 
+                   name="instructor" 
+                   id="instructor" 
+                   placeholder="Instructor Name" 
+                   value="{{ request.GET.instructor }}">
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Subject Name</label>
+            <input type="text" 
+                   name="subject" 
+                   id="subject" 
+                   placeholder="Subject" 
+                   value="{{ request.GET.subject }}">
+          </div>
+
+          <div class="form-group">
+            <label for="subject_code">Subject Code</label>
+            <input type="text" 
+                   name="subject_code" 
+                   id="subject_code" 
+                   placeholder="e.g., CS101" 
+                   value="{{ request.GET.subject_code }}">
+          </div>
+
+          <div class="form-group">
+            <label for="room">Room</label>
+            <input type="text" 
+                   name="room" 
+                   id="room" 
+                   placeholder="Room Number" 
+                   value="{{ request.GET.room }}">
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+            Search Schedule
+          </button>
+          <a href="?department={{ selected_department.id }}" class="btn btn-secondary">
+            <i class="fas fa-redo"></i>
+            Reset Filters
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Page Info -->
+    {% if selected_department or request.GET.section or request.GET.room or request.GET.instructor or request.GET.subject or request.GET.school_year_level %}
+    <div class="page-info">
+      <h2>
+        <i class="fas fa-calendar-check"></i>
+        Showing Schedule for {{ selected_department.name }}
+        {% if request.GET.instructor %} — Instructor: {{ request.GET.instructor }}{% endif %}
+      </h2>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Schedule Tables Grouped by Section -->
+    {% if selected_department %}
+      {% if subjects %}
+        {% regroup subjects by section as section_groups %}
+        {% for group in section_groups %}
+          <div class="table-container">
+            <div class="section-header">
+              <i class="fas fa-users"></i>
+              {{ group.grouper|default:"No Section Assigned" }}
+            </div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Subject Code</th>
+                    <th>Subject Name</th>
+                    <th>Prerequisite</th>
+                    <th>Lec Units</th>
+                    <th>Lab Units</th>
+                    <th>Total Units</th>
+                    <th>Time</th>
+                    <th>Day</th>
+                    <th>Room</th>
+                    <th>Instructor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for cs in group.list %}
+                  <tr>
+                    <td>{{ cs.subject_code }}</td>
+                    <td>{{ cs.subject_name }}</td>
+                    <td>{{ cs.prerequisite|default:"—" }}</td>
+                    <td>{{ cs.lecture_units }}</td>
+                    <td>{{ cs.lab_units }}</td>
+                    <td>{{ cs.units }}</td>
+                    <td>
+  {% if cs.start_time and cs.end_time %}
+    {{ cs.start_time|time:"h:i A" }} - {{ cs.end_time|time:"h:i A" }}
+  {% else %}
+    —
+  {% endif %}
+</td>
+                    <td>{{ cs.day|default:"—" }}</td>
+                    <td>{{ cs.room|default:"—" }}</td>
+                    <td>
+                      {% if cs.instructor %}
+                        {{ cs.instructor.user.first_name }} {{ cs.instructor.user.last_name }}
+                      {% else %}
+                        —
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-data">
+          <i class="fas fa-inbox"></i>
+          <p>No subjects found matching your filters.</p>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="no-data">
+        <i class="fas fa-arrow-up"></i>
+        <p>Please select a department above to view class schedules.</p>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <script>
+    // Auto-submit when department changes
+    const deptSelect = document.getElementById('departmentSelect');
+    if (deptSelect) {
+      deptSelect.addEventListener('change', function() {
+        document.getElementById('departmentForm').submit();
+      });
+    }
+  </script>
+
+</body>
+</html>

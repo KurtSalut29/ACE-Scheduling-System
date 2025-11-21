@@ -1,0 +1,542 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Subjects | A.C.E. Scheduling System</title>
+  <link rel="icon" type="image/png" href="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'scheduler/css/admin/manage_curriculum.css' %}">
+  <link rel="stylesheet" href="{% static 'scheduler/css/admin/darkmode.css' %}">
+  <script src="{% static 'scheduler/js/global_darkmode.js' %}" defer></script>
+</head>
+
+<body>
+  <!-- Hamburger Menu Button -->
+  <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Navigation">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Sidebar Overlay (for mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div>
+      <div class="sidebar-header">
+        <img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo">
+        <div class="logo-text">A.C.E <span>Sched</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="{% url 'admin_dashboard' %}"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+        <a href="{% url 'manage_users' %}"><i class="fas fa-users"></i><span>Users</span></a>
+        <a href="{% url 'manage_curriculum' %}" class="active"><i class="fas fa-book"></i><span>Subjects</span></a>
+        <a href="{% url 'manage_sections' %}"><i class="fas fa-layer-group"></i><span>Sections</span></a>
+        <a href="{% url 'manage_rooms' %}"><i class="fas fa-door-open"></i><span>Rooms</span></a>
+        <a href="{% url 'manage_subjects' %}"><i class="fas fa-book-open"></i><span>Class Schedules</span></a>
+        <a href="{% url 'manage_instructors' %}"><i class="fas fa-chalkboard-teacher"></i><span>Instructors</span></a>
+        <a href="{% url 'manage_announcements' %}"><i class="fas fa-bullhorn"></i><span>Announcements</span></a>
+      </nav>
+    </div>
+    <a href="{% url 'logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="navbar">
+      <div class="navbar-brand">Manage Subjects</div>
+      <div class="profile">
+      </div>
+    </div>
+
+    <!-- Toast messages -->
+    <div class="toast-container">
+      {% for message in messages %}
+      <div class="toast {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- Forms Grid -->
+    <div class="forms-grid">
+      <!-- Add Department -->
+      <div class="card">
+        <h2><img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo" class="heading-logo"> Add Department</h2>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            {{ department_form.code.label_tag }}
+            {{ department_form.code }}
+          </div>
+          <div class="form-group">
+            {{ department_form.name.label_tag }}
+            {{ department_form.name }}
+          </div>
+          <button type="submit" name="action" value="add_department"><i class="fas fa-plus-circle"></i> Add Department</button>
+        </form>
+      </div>
+
+      <!-- Add Course -->
+      <div class="card">
+        <h2><img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo" class="heading-logo"> Add Course</h2>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            {{ course_form.department.label_tag }}
+            {{ course_form.department }}
+          </div>
+          <div class="form-group">
+            {{ course_form.course_code.label_tag }}
+            {{ course_form.course_code }}
+          </div>
+          <div class="form-group">
+            {{ course_form.course_name.label_tag }}
+            {{ course_form.course_name }}
+          </div>
+          <button type="submit" name="action" value="add_course"><i class="fas fa-plus-circle"></i> Add Course</button>
+        </form>
+      </div>
+
+      <!-- Create Curriculum -->
+      <div class="card">
+        <h2><img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo" class="heading-logo"> Create Curriculum</h2>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            {{ curriculum_form.course.label_tag }}
+            {{ curriculum_form.course }}
+          </div>
+          <div class="form-group">
+            {{ curriculum_form.name.label_tag }}
+            {{ curriculum_form.name }}
+          </div>
+          <div class="checkbox-group">
+            {{ curriculum_form.is_active }}
+            <label for="id_is_active">Active</label>
+          </div>
+          <button type="submit" name="action" value="add_curriculum"><i class="fas fa-plus-circle"></i> Create Curriculum</button>
+        </form>
+      </div>
+
+      <!-- Add School Year Level -->
+      <div class="card">
+        <h2><img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo" class="heading-logo"> Add School Year Level</h2>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            {{ schoolyear_form.curriculum.label_tag }}
+            {{ schoolyear_form.curriculum }}
+          </div>
+          <div class="form-group">
+            {{ schoolyear_form.school_year.label_tag }}
+            {{ schoolyear_form.school_year }}
+          </div>
+          <button type="submit" name="action" value="add_school_year_level"><i class="fas fa-plus-circle"></i> Add School Year Level</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Selection Cards -->
+    <div class="selection-cards">
+      <!-- Select Curriculum -->
+      <div class="card" id="curriculumCard">
+        <h2><img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo" class="heading-logo"> Select Curriculum</h2>
+        <form id="curriculumForm" method="GET">
+          <div class="form-group">
+            <label for="curriculumSelect">Curriculum:</label>
+            <select name="curriculum" id="curriculumSelect" required>
+              <option value="">-- Select Curriculum --</option>
+              {% for curriculum in curricula %}
+              <option value="{{ curriculum.id }}" {% if selected_curriculum and selected_curriculum.id == curriculum.id %}selected{% endif %}>
+                {{ curriculum.name }} – {{ curriculum.course.course_name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <!-- Select Section (AFTER Curriculum Selection) -->
+      {% if selected_curriculum %}
+      <div class="card" id="sectionCard">
+        <h2><img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo" class="heading-logo"> Select Section for {{ selected_curriculum.name }} – {{ selected_curriculum.course.course_name }}</h2>
+        <form id="sectionForm" method="GET">
+          <input type="hidden" name="curriculum" value="{{ selected_curriculum.id }}">
+          <div class="form-group">
+            <label for="sectionSelect">Section:</label>
+            <select name="section" id="sectionSelect" required>
+              <option value="">-- Select Section --</option>
+              {% for sec in sections %}
+              <option value="{{ sec.id }}" {% if selected_section and selected_section.id == sec.id %}selected{% endif %}>{{ sec.section_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if selected_curriculum and selected_section %}
+    <!-- Add Subject Form -->
+    <div class="card">
+      <h2><img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo" class="heading-logo"> Add Subject for {{ selected_section.section_name }} — {{ selected_curriculum.name }} ({{ selected_curriculum.course.course_name }})</h2>
+      
+      <form method="POST" class="add-subject-form">
+        {% csrf_token %}
+        <input type="hidden" name="curriculum_id" value="{{ selected_curriculum.id }}">
+        <input type="hidden" name="section_id" value="{{ selected_section.id }}">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Subject Code</label>
+            {{ subject_form.subject_code }}
+          </div>
+          <div class="form-group">
+            <label>Subject Name</label>
+            {{ subject_form.subject_name }}
+          </div>
+          <div class="form-group">
+            <label>Prerequisite</label>
+            {{ subject_form.prerequisite }}
+          </div>
+          <div class="form-group">
+            <label>Lecture Units</label>
+            {{ subject_form.lecture_units }}
+          </div>
+          <div class="form-group">
+            <label>Lab Units</label>
+            {{ subject_form.lab_units }}
+          </div>
+          <div class="form-group">
+            <label>Total Units</label>
+            {{ subject_form.units }}
+          </div>
+          <div class="form-group">
+            <label>Year Level</label>
+            {{ subject_form.year }}
+          </div>
+          <div class="form-group">
+            <label>Semester</label>
+            {{ subject_form.semester_choice }}
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            {{ subject_form.duration }}
+          </div>
+          <div class="form-group">
+            <label>Time</label>
+            {{ subject_form.time }}
+          </div>
+          <div class="form-group">
+            <label for="room">Room</label>
+            <select name="room" id="room" required>
+              <option value="">-- Select Room --</option>
+              {% if available_rooms.current_department %}
+                <optgroup label="{{ available_rooms.current_department.name }} Department">
+                  {% for room in available_rooms.current_department.rooms %}
+                    <option value="{{ room.id }}">{{ room.room_name }}</option>
+                  {% empty %}
+                    <option disabled>No rooms available in this department.</option>
+                  {% endfor %}
+                </optgroup>
+              {% endif %}
+              {% if available_rooms.other_departments %}
+                <optgroup label="Other Departments">
+                  {% for room in available_rooms.other_departments %}
+                    <option value="{{ room.id }}">{{ room.room_name }} ({{ room.department.name }})</option>
+                  {% endfor %}
+                </optgroup>
+              {% endif %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="instructor">Instructor</label>
+            <select name="instructor" id="instructor" required>
+              <option value="">-- Select Instructor --</option>
+              {% if assign_instructors.current_department %}
+                <optgroup label="{{ assign_instructors.current_department.name }} Department">
+                  {% for instructor in assign_instructors.current_department.instructors %}
+                    <option value="{{ instructor.id }}">
+                      {{ instructor.user.get_full_name }} ({{ instructor.department.name }})
+                    </option>
+                  {% empty %}
+                    <option disabled>No instructors available in this department.</option>
+                  {% endfor %}
+                </optgroup>
+              {% endif %}
+              {% if assign_instructors.other_departments %}
+                <optgroup label="Other Departments">
+                  {% for instructor in assign_instructors.other_departments %}
+                    <option value="{{ instructor.id }}">
+                      {{ instructor.user.get_full_name }} ({{ instructor.department.name }})
+                    </option>
+                  {% endfor %}
+                </optgroup>
+              {% endif %}
+            </select>
+          </div>
+        </div>
+        
+        <!-- Day Selection (Full Width Row) -->
+        <div class="day-selection">
+          <label>Day:</label>
+          <div class="day-checkboxes">
+            {{ subject_form.day }}
+          </div>
+        </div>
+
+        <button type="submit" name="action" value="add_subject" class="btn btn-success mt-3">
+          <i class="fas fa-plus-circle"></i> Add Subject
+        </button>
+      </form>
+    </div>
+
+    <!-- Curriculum Subjects Listing with Scrollable Table -->
+    <div class="card">
+      <h2><img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo" class="heading-logo"> {{ selected_section.section_name }} - {{ selected_curriculum.course.course_name }} (Subjects)</h2>
+      
+      {% for ygroup in curriculum_subjects %}
+        {% for sgroup in ygroup.semesters %}
+          <h3>{{ ygroup.year.year }} Year - {{ sgroup.semester.name }}</h3>
+          
+          <!-- ✅ TABLE WRAPPER FOR HORIZONTAL SCROLL -->
+          <div class="table-wrapper">
+            <table class="subject-table">
+              <thead>
+                <tr>
+                  <th>Subject Code</th>
+                  <th>Subject Name</th>
+                  <th>Prerequisite</th>
+                  <th>Lecture</th>
+                  <th>Lab</th>
+                  <th>Units</th>
+                  <th>Time</th>
+                  <th>Day</th>
+                  <th>Room</th>
+                  <th>Instructor</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for cs in sgroup.subjects %}
+                <tr id="subject-row-{{ cs.subject.id }}">
+                  <td>{{ cs.subject.subject_code }}</td>
+                  <td>{{ cs.subject.subject_name }}</td>
+                  <td>{{ cs.subject.prerequisite|default:"—" }}</td>
+                  <td>{{ cs.subject.lecture_units }}</td>
+                  <td>{{ cs.subject.lab_units }}</td>
+                  <td>{{ cs.subject.units }}</td>
+                  <td>{% if cs.subject.start_time and cs.subject.end_time %}{{ cs.subject.start_time|time:"h:i A" }} - {{ cs.subject.end_time|time:"h:i A" }}{% else %}—{% endif %}</td>
+                  <td>{{ cs.subject.day }}</td>
+                  <td>{{ cs.subject.room }}</td>
+                  <td>{{ cs.subject.instructor }}</td>
+                  <td>
+                    <button type="button" class="action-btn delete" onclick="openDeleteModal('{{ cs.subject.id }}', '{{ cs.subject.subject_name }}')">
+                      <i class="fas fa-trash"></i> Delete
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="11">No subjects in this semester.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="auto_assign_semester">
+              <input type="hidden" name="curriculum_id" value="{{ selected_curriculum.id }}">
+              <input type="hidden" name="section_id" value="{{ selected_section.id }}">
+              <button class="btn btn-primary">
+                <i class="fas fa-calendar-check"></i> Assign Schedule for This Semester
+              </button>
+            </form>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Delete Subject Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content modal-small">
+      <div class="modal-header">
+        <h3>Confirm Delete</h3>
+        <span class="close" onclick="closeDeleteModal()">&times;</span>
+      </div>
+
+      <form id="deleteSubjectForm"
+            method="POST"
+            action="{{ request.path }}?curriculum={{ selected_curriculum.id }}&section={{ selected_section.id }}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete_subject">
+        <input type="hidden" name="subject_id" id="delete_subject_id">
+        <input type="hidden" name="curriculum_id" value="{{ selected_curriculum.id }}">
+        <input type="hidden" name="section_id" value="{{ selected_section.id }}">
+
+        <div class="modal-body">
+          <p style="text-align: center; font-size: 14px; color: var(--text-dark);">
+            Are you sure you want to delete this subject?<br>
+            <strong id="delete_subject_name" style="color: var(--danger);"></strong>
+          </p>
+          <p style="text-align: center; font-size: 12px; color: #666; margin-top: 10px;">
+            This action cannot be undone.
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+          <button type="submit" class="btn-delete"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // ============================================
+    // HAMBURGER MENU & SIDEBAR TOGGLE
+    // ============================================
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    // Toggle sidebar on hamburger click
+    hamburgerBtn.addEventListener('click', function() {
+      hamburgerBtn.classList.toggle('active');
+      sidebar.classList.toggle('active');
+      sidebarOverlay.classList.toggle('active');
+      document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : 'auto';
+    });
+
+    // Close sidebar when clicking overlay
+    sidebarOverlay.addEventListener('click', function() {
+      hamburgerBtn.classList.remove('active');
+      sidebar.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close sidebar when clicking a nav link (mobile)
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 767) {
+          hamburgerBtn.classList.remove('active');
+          sidebar.classList.remove('active');
+          sidebarOverlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+    });
+
+    // ============================================
+    // FORM SUBMISSION & SCROLL MANAGEMENT
+    // ============================================
+    // Save scroll before ANY form submits (GET or POST)
+    document.querySelectorAll("form").forEach(form => {
+      form.addEventListener("submit", () => {
+        sessionStorage.setItem("scrollY", window.scrollY);
+      });
+    });
+
+    // Save scroll before curriculum change
+    const curriculumSelect = document.getElementById("curriculumSelect");
+    const curriculumForm = document.getElementById("curriculumForm");
+    if (curriculumSelect && curriculumForm) {
+      curriculumSelect.addEventListener("change", () => {
+        sessionStorage.setItem("scrollY", window.scrollY);
+        curriculumForm.submit();
+      });
+    }
+
+    // Save scroll before section change
+    const sectionForm = document.getElementById("sectionForm");
+    if (sectionForm) {
+      const sectionSelect = sectionForm.querySelector("select[name='section']");
+      if (sectionSelect) {
+        sectionSelect.addEventListener("change", () => {
+          sessionStorage.setItem("scrollY", window.scrollY);
+          sectionForm.submit();
+        });
+      }
+    }
+
+    // Restore scroll after reload
+    const savedY = sessionStorage.getItem("scrollY");
+    if (savedY) {
+      window.scrollTo({ top: parseInt(savedY, 10), behavior: "auto" });
+      sessionStorage.removeItem("scrollY");
+    }
+
+    // ============================================
+    // TIME FILTERING
+    // ============================================
+    const durationSelect = document.getElementById("duration-select");
+    const timeSelect = document.getElementById("time-select");
+
+    if (durationSelect && timeSelect) {
+      const allOptions = Array.from(timeSelect.options);
+
+      durationSelect.addEventListener("change", function() {
+        const selectedDuration = durationSelect.value;
+        timeSelect.innerHTML = "";
+
+        const filtered = allOptions.filter(opt => {
+          const parts = opt.value.split("-");
+          const duration = parts[parts.length - 1];
+          return duration === selectedDuration || opt.value === "";
+        });
+
+        filtered.forEach(opt => timeSelect.appendChild(opt));
+      });
+    }
+
+    // ============================================
+    // WINDOW RESIZE HANDLER
+    // ============================================
+    window.addEventListener('resize', function() {
+      // Close sidebar on resize if switching to desktop view
+      if (window.innerWidth > 767) {
+        hamburgerBtn.classList.remove('active');
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    });
+  });
+
+  // ============================================
+  // MODAL FUNCTIONS
+  // ============================================
+  // Open Delete Modal
+  function openDeleteModal(subjectId, subjectName) {
+    document.getElementById('delete_subject_id').value = subjectId;
+    document.getElementById('delete_subject_name').textContent = subjectName;
+    document.getElementById('deleteModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close Delete Modal
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+    const deleteModal = document.getElementById('deleteModal');
+    if (event.target === deleteModal) {
+      closeDeleteModal();
+    }
+  };
+</script>
+
+</body>
+</html>

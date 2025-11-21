@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Announcements | A.C.E. Scheduling System</title>
+    <link rel="icon" type="image/png" href="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'scheduler/css/admin/manage_announcement.css' %}" />
+    <link rel="stylesheet" href="{% static 'scheduler/css/admin/darkmode.css' %}">
+    <script src="{% static 'scheduler/js/global_darkmode.js' %}" defer></script>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div>
+            <div class="sidebar-header">
+                <img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo">
+                <div class="logo-text">A.C.E <span>Sched</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{% url 'admin_dashboard' %}"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+                <a href="{% url 'manage_users' %}"><i class="fas fa-users"></i><span> Users</span></a>
+                <a href="{% url 'manage_curriculum' %}"><i class="fas fa-book"></i><span> Subjects</span></a>
+                <a href="{% url 'manage_sections' %}"><i class="fas fa-layer-group"></i><span> Sections</span></a>
+                <a href="{% url 'manage_rooms' %}"><i class="fas fa-door-open"></i><span> Rooms</span></a>
+                <a href="{% url 'manage_subjects' %}"><i class="fas fa-book-open"></i><span>Class Schedules</span></a>
+                <a href="{% url 'manage_instructors' %}"><i class="fas fa-chalkboard-teacher"></i><span>Instructors</span></a>
+                <a href="{% url 'manage_announcements' %}" class="active"><i class="fas fa-bullhorn"></i><span>Announcements</span></a>
+            </nav>
+        </div>
+        <a href="{% url 'logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span> Logout</span></a>
+    </aside>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Manage Announcements</h1>
+        </div>
+
+        <!-- Flash Messages -->
+        <div class="messages" id="flash-messages" role="status" aria-live="polite" aria-atomic="true">
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Department Selection -->
+        <div class="container form-container">
+            <form method="GET" style="margin-bottom: 0;">
+                <label for="department" style="font-weight:600;">Select Department:</label>
+                <select name="department" id="department" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Choose Department --</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept.id }}" {% if selected_department and dept.id == selected_department.id %}selected{% endif %}>
+                            {{ dept.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        {% if selected_department %}
+        <!-- Add Announcement -->
+        <div class="container form-container">
+            <h2>Add Announcement for {{ selected_department.name }}</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_announcement">
+                <input type="hidden" name="department" value="{{ selected_department.id }}">
+
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" class="form-input" placeholder="Title" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea name="content" class="form-input" rows="4" placeholder="Write announcement..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Target Roles (optional)</label>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <label><input type="checkbox" name="target_roles" value="ADMIN"> Admin</label>
+                        <label><input type="checkbox" name="target_roles" value="INSTRUCTOR"> Instructor</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-add"><i class="fas fa-plus"></i> Publish</button>
+            </form>
+        </div>
+
+        <!-- List of Announcements -->
+        <div class="container">
+            <h2>Recent Announcements for {{ selected_department.name }}</h2>
+
+            {% if announcements %}
+                <div class="announcement-grid">
+                    {% for a in announcements %}
+                        <div class="announcement-card">
+                            <h4>{{ a.title }}</h4>
+                            <p>{{ a.content }}</p>
+                            <small>🎯 {{ a.target_roles|default:'All' }}</small>
+                            <small>📅 {{ a.created_at }}</small>
+                            <form method="POST" onsubmit="return confirm('Delete this announcement?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_announcement">
+                                <input type="hidden" name="announcement_id" value="{{ a.id }}">
+                                <button type="submit" class="btn-delete"><i class="fas fa-trash"></i> Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-data">No announcements yet for this department.</p>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="container">
+            <p class="no-data">Please select a department to view and manage announcements.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Auto-hide flash messages
+        setTimeout(function(){
+            var c = document.getElementById('flash-messages');
+            if(!c) return;
+            c.querySelectorAll('.alert').forEach(function(a){ a.remove(); });
+        }, 4000);
+    </script>
+</body>
+</html>

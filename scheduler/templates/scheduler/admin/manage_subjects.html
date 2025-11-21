@@ -1,0 +1,287 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Class Schedules | A.C.E. Scheduling System</title>
+    <link rel="icon" type="image/png" href="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'scheduler/css/admin/darkmode.css' %}">
+    <link rel="stylesheet" href="{% static 'scheduler/css/admin/manage_subjects.css' %}" />
+    <script src="{% static 'scheduler/js/global_darkmode.js' %}" defer></script>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-header">
+        <img src="{% static 'scheduler/images/Automated_Class_Scheduling_Logo-removebg-preview.png' %}" alt="Logo">
+        <div class="logo-text">A.C.E <span>Sched</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="{% url 'admin_dashboard' %}"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+        <a href="{% url 'manage_users' %}"><i class="fas fa-users"></i><span>Users</span></a>
+        <a href="{% url 'manage_curriculum' %}"><i class="fas fa-book"></i><span>Subjects</span></a>
+        <a href="{% url 'manage_sections' %}"><i class="fas fa-layer-group"></i><span>Sections</span></a>
+        <a href="{% url 'manage_rooms' %}"><i class="fas fa-door-open"></i><span>Rooms</span></a>
+        <a href="{% url 'manage_subjects' %}" class="active"><i class="fas fa-book-open"></i><span>Class Schedules</span></a>
+        <a href="{% url 'manage_instructors' %}"><i class="fas fa-chalkboard-teacher"></i><span>Instructors</span></a>
+        <a href="{% url 'manage_announcements' %}"><i class="fas fa-bullhorn"></i><span>Announcements</span></a>
+      </nav>
+    </div>
+    <a href="{% url 'logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="navbar">
+      <div class="navbar-brand">Manage Class Schedules</div>
+    </div>
+
+    <!-- Toast Messages -->
+    {% if messages %}
+    <div class="toast-container">
+      {% for message in messages %}
+      {% if message.tags == 'success' %}
+      <div class="toast toast-success">{{ message }}</div>
+      {% elif message.tags == 'error' %}
+      <div class="toast toast-error">{{ message }}</div>
+      {% elif message.tags == 'warning' %}
+      <div class="toast toast-warning">{{ message }}</div>
+      {% else %}
+      <div class="toast toast-info">{{ message }}</div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container-fluid">
+      <!-- Search & Filter Section -->
+      <div class="search-filter-wrapper">
+        <form method="get" id="filterForm">
+          <div class="filter-row">
+            <!-- Department Filter -->
+            <div class="filter-group">
+              <label for="department"><i class="fas fa-building"></i> Department</label>
+              <select name="department" id="department" onchange="this.form.submit()">
+                <option value="">All Departments</option>
+                {% for d in departments %}
+                  <option value="{{ d.id }}" 
+                    {% if request.GET.department == d.id|stringformat:'s' or selected_department.id == d.id %}selected{% endif %}>
+                    {{ d.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- School Year Filter -->
+            <div class="filter-group">
+              <label for="school_year"><i class="fas fa-calendar-alt"></i> School Year</label>
+              <select name="school_year" id="school_year">
+                <option value="">All School Years</option>
+                {% for sy in school_years %}
+                  <option value="{{ sy }}" {% if request.GET.school_year == sy %}selected{% endif %}>{{ sy }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Section Filter -->
+            <div class="filter-group">
+              <label for="section"><i class="fas fa-layer-group"></i> Section</label>
+              <select name="section" id="section">
+                <option value="">All Sections</option>
+                {% for s in sections %}
+                  <option value="{{ s }}" {% if request.GET.section == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Instructor Filter -->
+            <div class="filter-group">
+              <label for="instructor"><i class="fas fa-chalkboard-teacher"></i> Instructor</label>
+              <select name="instructor" id="instructor">
+                <option value="">All Instructors</option>
+                {% for inst in instructors %}
+                  <option value="{{ inst.user.first_name }} {{ inst.user.last_name }}"
+                    {% if request.GET.instructor == inst.user.first_name|add:" "|add:inst.user.last_name %}selected{% endif %}>
+                    {{ inst.user.first_name }} {{ inst.user.last_name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Subject Name Filter -->
+            <div class="filter-group">
+              <label for="subject"><i class="fas fa-book"></i> Subject Name</label>
+              <input type="text" name="subject" id="subject" placeholder="Search subject..." value="{{ request.GET.subject }}">
+            </div>
+
+            <!-- Subject Code Filter -->
+            <div class="filter-group">
+              <label for="subject_code"><i class="fas fa-code"></i> Subject Code</label>
+              <input type="text" name="subject_code" id="subject_code" placeholder="Search code..." value="{{ request.GET.subject_code }}">
+            </div>
+
+            <!-- Room Filter -->
+            <div class="filter-group">
+              <label for="room"><i class="fas fa-door-open"></i> Room</label>
+              <input type="text" name="room" id="room" placeholder="Search room..." value="{{ request.GET.room }}">
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-search"></i> Search
+            </button>
+            <a href="?{% if selected_department %}department={{ selected_department.id }}{% endif %}" class="btn btn-secondary">
+              <i class="fas fa-redo"></i> Reset Filters
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results Section -->
+      {% if selected_department %}
+        {% if subjects %}
+          {% regroup subjects by section as section_groups %}
+          
+          {% for section_group in section_groups %}
+            <div class="schedule-section">
+              <div class="section-header">
+                <i class="fas fa-layer-group"></i>
+                <span>{{ section_group.grouper|default:"No Section" }}</span>
+              </div>
+
+              <!-- Group by Year Level -->
+              {% regroup section_group.list by year_level_display as year_groups %}
+              {% for year_group in year_groups %}
+                <div class="year-block">
+                  <div class="year-header">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Year {{ year_group.grouper|default:"N/A" }}</span>
+                  </div>
+
+                  <!-- Group by Semester -->
+                  {% regroup year_group.list by semester_display as semester_groups %}
+                  {% for semester_group in semester_groups %}
+                    <div class="semester-block">
+                      <div class="semester-header">
+                        <i class="fas fa-book-reader"></i>
+                        <span>{{ semester_group.grouper|default:"No Semester" }}</span>
+                      </div>
+
+                      <!-- Subjects Table -->
+                      <div class="table-wrapper">
+                        <table class="subjects-table">
+                          <thead>
+                            <tr>
+                              <th>Subject Code</th>
+                              <th>Subject Name</th>
+                              <th>Prerequisite</th>
+                              <th>Lecture</th>
+                              <th>Lab</th>
+                              <th>Units</th>
+                              <th>Time</th>
+                              <th>Day</th>
+                              <th>Room</th>
+                              <th>Instructor</th>
+                              
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for cs in semester_group.list %}
+                            <tr>
+                              <td><span class="subject-code">{{ cs.subject_code }}</span></td>
+                              <td class="subject-name">{{ cs.subject_name }}</td>
+                              <td>{{ cs.prerequisite|default:"—" }}</td>
+                              <td class="text-center">{{ cs.lecture_units }}</td>
+                              <td class="text-center">{{ cs.lab_units }}</td>
+                              <td class="text-center"><span class="badge">{{ cs.units }}</span></td>
+                              <td>
+                                {% if cs.start_time and cs.end_time %}
+                                  <span class="time-slot">{{ cs.start_time|time:"h:i A" }} - {{ cs.end_time|time:"h:i A" }}</span>
+                                {% else %}
+                                  —
+                                {% endif %}
+                              </td>
+                              <td><span class="day-badge">{{ cs.day|default:"—" }}</span></td>
+                              <td><span class="room-badge">{{ cs.room|default:"—" }}</span></td>
+                              <td>
+                                {% if cs.instructor %}
+                                  <span class="instructor-name">{{ cs.instructor.user.first_name }} {{ cs.instructor.user.last_name }}</span>
+                                {% else %}
+                                  —
+                                {% endif %}
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="no-data">
+            <i class="fas fa-inbox"></i>
+            <p>No class schedules found</p>
+            <p class="sub-text">Try adjusting your search filters or select a different department</p>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="no-data">
+          <i class="fas fa-building"></i>
+          <p>Please select a department</p>
+          <p class="sub-text">Choose a department from the filter above to view class schedules</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+
+  <script>
+
+
+    // Toast auto-dismiss
+    setTimeout(() => {
+      const toasts = document.querySelectorAll('.toast, .toast-success, .toast-error, .toast-warning, .toast-info');
+      toasts.forEach(toast => {
+        toast.style.animation = 'fadeOut 0.5s ease forwards';
+        setTimeout(() => toast.remove(), 500);
+      });
+    }, 5000);
+
+  
+    // Toast auto-dismiss
+    setTimeout(() => {
+      const toasts = document.querySelectorAll('.toast, .toast-success, .toast-error, .toast-warning, .toast-info');
+      toasts.forEach(toast => {
+        toast.style.animation = 'fadeOut 0.5s ease forwards';
+        setTimeout(() => toast.remove(), 500);
+      });
+    }, 5000);
+
+    // Edit subject function (placeholder)
+    function editSubject(id) {
+      // Implement edit functionality
+      console.log('Edit subject:', id);
+      alert('Edit functionality - Subject ID: ' + id);
+    }
+
+    // Delete subject function (placeholder)
+    function deleteSubject(id, name) {
+      if (confirm('Are you sure you want to delete "' + name + '"?')) {
+        // Implement delete functionality
+        console.log('Delete subject:', id);
+        // window.location.href = '/delete-subject/' + id + '/';
+      }
+    }
+  </script>
+</body>
+</html>
